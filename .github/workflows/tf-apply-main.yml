@@ -84,8 +84,10 @@ jobs:
         echo "Bucket URL: $BUCKET_URL"
         echo "Backend IP (For viewing hints): $BACKEND_IP"
 
-    - name: Copy state file to S3
+    - name: Debug state file path
       if: always()
       run: |
-        aws s3 cp terraform.tfstate s3://aigoat-state-files-${{ steps.account.outputs.ACCOUNT_ID }}/terraform.tfstate
-      working-directory: ./terraform
+        echo "Listing ./terraform directory"
+        ls -lah ./terraform
+        echo "Listing root directory"
+        ls -lah .
