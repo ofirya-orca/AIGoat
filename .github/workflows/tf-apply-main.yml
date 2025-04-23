@@ -15,6 +15,11 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: "us-east-1"
 
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./terraform
+
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -75,7 +80,6 @@ jobs:
         
         # Terraform Apply
         terraform apply -auto-approve -input=false
-      working-directory: ./terraform
         
     - name: Display Terraform Outputs
       id: tf_output
@@ -84,16 +88,8 @@ jobs:
         BACKEND_IP=$(terraform output -raw backend_ip || echo "No backend_ip output")
         echo "Bucket URL: $BUCKET_URL"
         echo "Backend IP (For viewing hints): $BACKEND_IP"
-      working-directory: ./terraform
-    
-    - name: 🔍 Debug files in ./terraform before S3 upload
-      run: |
-        echo "Files in ./terraform:"
-        ls -lah
-      working-directory: ./terraform
 
-    - name: Upload state file
+    - name: Copy state file to S3
       if: always()
       run: |
-        aws s3 cp terraform.tfstate s3://aigoat-state-files-${{ steps.account.outputs.ACCOUNT_ID }}/terraform.tfstate
-      working-directory: ./terraform
+        aws s3 cp ./terraform.tfstate s3://aigoat-state-files-${{ steps.account.outputs.ACCOUNT_ID }}/terraform.tfstate
