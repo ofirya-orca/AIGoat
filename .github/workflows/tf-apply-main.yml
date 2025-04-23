@@ -88,4 +88,4 @@ jobs:
       if: always()
       run: |
         aws s3 cp terraform.tfstate s3://aigoat-state-files-${{ steps.account.outputs.ACCOUNT_ID }}/terraform.tfstate
-
+      working-directory: ./terraform
