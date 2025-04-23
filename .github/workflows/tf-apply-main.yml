@@ -80,6 +80,12 @@ jobs:
         echo "Bucket URL: $BUCKET_URL"
         echo "Backend IP (For viewing hints): $BACKEND_IP"
       working-directory: ./terraform
+    
+    - name: 🔍 Debug files in ./terraform before S3 upload
+      run: |
+        echo "Files in ./terraform:"
+        ls -lah
+      working-directory: ./terraform
 
     - name: Upload state file
       if: always()
